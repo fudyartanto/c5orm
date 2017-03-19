@@ -1,0 +1,22 @@
+{
+    "name": "fudyartanto/c5orm",
+    "description": "Concrete5 ORM package.",
+    "keywords": ["orm", "orm"],
+    "license": "MIT",
+    "authors": [{
+        "name": "Arfan Fudyartanto",
+        "email": "arfan@mylits.com"
+    }],
+    "type": "project",
+    "require": {
+        "php": ">=5.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fudyartanto\\C5orm\\": "src/"
+        }
+    }
+}
