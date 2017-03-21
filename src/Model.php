@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
 *  Concrete5 ORM
@@ -12,7 +12,6 @@ use Database;
 
 class Model
 {
-
     public static function db()
     {
         return Database::get();
@@ -71,11 +70,40 @@ class Model
     public function save()
     {
         if ($primary = self::getPrimaryColumn()) {
-            if ($this->{$primary}) {
-                // update
+            $values = [];
+            if ($primaryValue = $this->{$primary}) {
+                $q = "UPDATE " . self::getTableName() . " SET ";
+                $sets = [];
+                foreach($this as $attr => $value) {
+                    if ($attr == $primary) continue;
+                    $sets[] = "{$attr} = ?";
+                    $values[] = $value;
+                }
+                $q .= implode(", ", $sets) . " WHERE `{$primary}` = ?";
+                $values[] = $primaryValue;
+                return self::db()->Execute($q, $values);
             } else {
-                // add
+                $q = "INSERT INTO " . self::getTableName() . " SET ";
+                $sets = [];
+                foreach($this as $attr => $value) {
+                    $sets[] = "{$attr} = ?";
+                    $values = $value;
+                }
+                $q .= implode(", ", $sets);
+                return self::db()->Execute($q, $values);
             }
         }
+    }
+
+    /**
+     * Add query condition
+     *
+     * @param string $column
+     * @param string $operator
+     * @param string|int $value
+     */
+    public static function where($column, $operator, $value)
+    {
+        return (new Builder(self::getTableName()))->where($column, $operator, $value);
     }
 }
