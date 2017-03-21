@@ -101,6 +101,7 @@ class Model
      * @param string $column
      * @param string $operator
      * @param string|int $value
+     * @return Fudyartanto\C5orm\Builder
      */
     public static function where($column, $operator, $value)
     {
