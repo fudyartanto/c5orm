@@ -12,6 +12,12 @@ use Database;
 
 class Model
 {
+
+    /**
+     * Get database object
+     *
+     * @return Concrete\Core\Database\Connection\Connection
+     */
     public static function db()
     {
         return Database::get();
@@ -52,13 +58,7 @@ class Model
             if (!$row) {
                 return null;
             }
-
-            $className = '\\' . get_called_class();
-            $class = new $className;
-            foreach ($row as $attr => $value) {
-                $class->{$attr} = $value;
-            }
-            return is_object($class) ? $class : null;
+            return self::toCalledClass($row);
         }
     }
 
@@ -87,7 +87,7 @@ class Model
                 $sets = [];
                 foreach($this as $attr => $value) {
                     $sets[] = "{$attr} = ?";
-                    $values = $value;
+                    $values[] = $value;
                 }
                 $q .= implode(", ", $sets);
                 return self::db()->Execute($q, $values);
@@ -106,5 +106,46 @@ class Model
     public static function where($column, $operator, $value)
     {
         return (new Builder(self::getTableName()))->where($column, $operator, $value);
+    }
+
+    /**
+     * Get all records
+     *
+     * @return Fudyartanto\C5orm\Collections
+     */
+    public static function all()
+    {
+        $data = self::db()->GetAll("SELECT * FROM " . self::getTableName());
+        return new Collections(
+            array_map(function($v) {
+                return self::toCalledClass($v);
+            }, $data)
+        );
+    }
+
+    /**
+     * Convert array to current called class
+     *
+     * @param array $attrs
+     * @return object
+     */
+    private static function toCalledClass($attrs)
+    {
+        $className = '\\' . get_called_class();
+        $class = new $className;
+        foreach ($attrs as $attr => $value) {
+            $class->{$attr} = $value;
+        }
+        return is_object($class) ? $class : null;
+    }
+
+    /**
+     * Delete current data from database
+     *
+     * @return bool
+     */
+    public function delete()
+    {
+
     }
 }
