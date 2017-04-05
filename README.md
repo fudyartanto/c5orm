@@ -25,4 +25,4 @@ $mytable = MyTable::find(1)
 
 ## Documentation
 
-The documentation, included in this repo in the root directory, and publicly available at https://fudyartanto.github.io/c5orm/. The documentation may also be run locally.
+The documentation is included in this repo in the root directory, and publicly available at https://fudyartanto.github.io/c5orm/. The documentation may also be run locally.
