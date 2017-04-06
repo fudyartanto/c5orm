@@ -10,7 +10,7 @@
     <title>C5orm - ORM for concrete5</title>
 
     <!-- Styles -->
-    <link href="assets/css/theDocs.all.min.css" rel="stylesheet">
+    <link href="assets/css/docs.min.css" rel="stylesheet">
     <link href="assets/css/custom.css" rel="stylesheet">
 
     <!-- Fonts -->
@@ -65,16 +65,13 @@
               <a href="#getting-started">Getting Started</a>
               <ul>
                 <li><a href="#installation">Installation</a></li>
-              </ul>
-            </li>
-            <li>
-              <a href="#">Basic Usage</a>
-              <ul>
-                <li><a href="#">Defining Model</a></li>
-                <li><a href="#">Select</a></li>
-                <li><a href="#">Insert</a></li>
-                <li><a href="#">Update</a></li>
-                <li><a href="#">Delete</a></li>
+                <li>
+                  <a href="#basic-usage">Basic Usage</a>
+                  <li><a href="#">Cread</a></li>
+                  <li><a href="#">Read</a></li>
+                  <li><a href="#">Update</a></li>
+                  <li><a href="#">Delete</a></li>
+                </li>
               </ul>
             </li>
 
@@ -103,22 +100,35 @@
 
           <section>
             <h2 id="getting-started">Getting Started</h2>
-
+            <h4 id="installation">Installation</h4>
+            <p>First download the c5orm from composer <code>composer require "fudyartanto/c5orm"</code></p>
+            <p>You directory structure should looks like below.</p>
+            <div class="code-window">
+              <div class="code-preview">
+                <div class="file-tree">
+                  <ul>
+                    <li class="is-folder open">your_package <i>root of package directory</i>
+                      <ul>
+                        <li class="is-folder open">vendor <i>composer vendor directory</i>
+                          <ul>
+                            <li class="is-folder open">fudyartanto
+                              <ul>
+                                <li class="is-folder">c5orm <i>c5orm vendor directory</i></li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="is-file">autoload.php <i>include this file to load all class in composer vendor</i></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section>
-            <h2 id="basic-usage">Basic Usage</h2>
-            <p></p>
 
-            <div class="code-window">
-              <div class="code-preview">
-
-              </div>
-
-<pre class="line-numbers"><code class="language-markup">
-
-</code></pre>
-            </div>
 
           </section>
 
@@ -137,11 +147,6 @@
         <div class="row">
           <div class="col-md-6 col-sm-6">
             <p>Copyright &copy; fudyartanto. All right reserved</p>
-          </div>
-          <div class="col-md-6 col-sm-6">
-            <ul class="footer-menu">
-              <li><a href="https://github.com/fudyartanto" target="_blank">Contact Me</a></li>
-            </ul>
           </div>
         </div>
       </div>
