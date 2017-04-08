@@ -146,6 +146,7 @@ class Model
      */
     public function delete()
     {
-
+        $primary = self::getPrimaryColumn();
+        return self::db()->Execute("DELETE FROM " . self::getTableName() . " WHERE {$primary} = ?", [$this->{$primary}]);
     }
 }
