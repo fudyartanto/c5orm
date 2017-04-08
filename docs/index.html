@@ -71,6 +71,7 @@
                 <li><a href="#crud">CRUD</a></li>
               </ul>
             </li>
+            <li><a href="#querying-with-model">Querying With Model</a></li>
           </ul>
 
         </aside>
@@ -141,14 +142,14 @@ class Plane extends Model
 &nbsp;*
 &nbsp;* @var string
 &nbsp;*/
-    protected static $table = '';
+    protected static $table = 'plane';
 }
 </code></pre>
             <h4 id="crud">Create, Read, Update and Delete Data (CRUD)</h4>
 <pre class="line-numbers"><code class="language-php">
 // Create data
 $plane = new Plane();
-$plane->name = 'Sukhoi';
+$plane->name = "Sukhoi";
 $plane->length = 21;
 $plane->height = 6;
 $plane->range = 3000;
@@ -166,7 +167,7 @@ if ($plane) {
 }
 
 // Update data
-$plane->name = 'New Sukhoi';
+$plane->name = "New Sukhoi";
 if ($plane->save()) {
   // Success update data
 } else {
@@ -179,6 +180,23 @@ if ($plane->delete()) {
 } else {
   // Failed delete data
 }
+</code></pre>
+          </section>
+          <section>
+            <h2 id="querying-with-model">Querying With Model</h2>
+            <h4 id="defining-model">Examples</h4>
+<pre class="line-numbers"><code class="language-php">
+// Retrieving all of the records for a given table.
+$planes = Plane::all();
+
+// Convert result to array.
+$planes = Plane::all()->toArray();
+
+// Get first occurrence data with where clause
+$plane = Plane::where("name", "=", "Sukhoi")->first();
+
+// Get total data
+$total = Plane::where("height", ">", 6)->count();
 </code></pre>
           </section>
         </article>
