@@ -159,4 +159,17 @@ class Model
     {
         return (array) $this;
     }
+
+    /**
+     * Mass update
+     *
+     * @param array $array -> ['col' => 'value']
+     */
+    public function update($array)
+    {
+        foreach ($array as $col => $value) {
+            $this->{$col} = $value;
+        }
+        return $this->save();
+    }
 }
