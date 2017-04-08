@@ -105,4 +105,22 @@ class Builder
         $q = "SELECT count(*) FROM (" . $this->getRawQuery() . ") AS `tb`";
         return self::db()->GetOne($q, $this->values);
     }
+
+    /**
+     * Get first occurrence record
+     *
+     * @return object
+     */
+    public function first()
+    {
+        $result = self::db()->GetRow($this->getRawQuery(), $this->values);
+        $backtrace = debug_backtrace();
+        if ($result && ($class = $backtrace[1]['class'])) {
+            $model = new $class;
+            foreach ($result as $key => $val) {
+                $model->{$key} = $val;
+            }
+            return $model;
+        }
+    }
 }

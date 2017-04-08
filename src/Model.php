@@ -149,4 +149,14 @@ class Model
         $primary = self::getPrimaryColumn();
         return self::db()->Execute("DELETE FROM " . self::getTableName() . " WHERE {$primary} = ?", [$this->{$primary}]);
     }
+
+    /**
+     * Convert collections data to array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return (array) $this;
+    }
 }
