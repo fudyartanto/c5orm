@@ -63,18 +63,14 @@
             <li><a class="active" href="index.html">Introduction</a></li>
             <li>
               <a href="#getting-started">Getting Started</a>
+            </li>
+            <li>
+              <a href="#basic-usage">Basic Usage</a>
               <ul>
-                <li><a href="#installation">Installation</a></li>
-                <li>
-                  <a href="#basic-usage">Basic Usage</a>
-                  <li><a href="#">Cread</a></li>
-                  <li><a href="#">Read</a></li>
-                  <li><a href="#">Update</a></li>
-                  <li><a href="#">Delete</a></li>
-                </li>
+                <li><a href="#defining-model">Defining Model</a></li>
+                <li><a href="#crud">CRUD</a></li>
               </ul>
             </li>
-
           </ul>
 
         </aside>
@@ -94,45 +90,97 @@
           <section>
             <h4>Why you might need this ?</h4>
             <p>
-              By default Concrete5 use <a href="http://www.doctrine-project.org/projects/orm.html" target="_blank">doctrine orm</a>. Doctrine orm is hard to get started and the usage/syntax is so much more complicated than Eloquent. And using Eloquent in Concrete5 package may pose a problem. In Concrete5.7 uses a different version of some Iluminate packages which clash with Eloquent.
+              By default Concrete5 use <a href="http://www.doctrine-project.org/projects/orm.html" target="_blank">Doctrine orm</a>. Doctrine orm is hard to get started and the usage/syntax is so much more complicated than Eloquent. And using Eloquent in Concrete5 package may pose a problem because in Concrete5.7 uses a different version of some Iluminate packages which clash with Eloquent.
+            </p>
+            <p>
+              C5orm has beautiful usage syntaq like Eloquent, but it will still suitable with Concrete5 because its <b>not</b> require another packages which can make conflict with Concrete5 core code. Its only require Concrete5 <code>Database</code> class.
             </p>
           </section>
 
           <section>
             <h2 id="getting-started">Getting Started</h2>
             <h4 id="installation">Installation</h4>
-            <p>First download the c5orm from composer <code>composer require "fudyartanto/c5orm"</code></p>
+            <p>First download the c5orm from composer. Go to root directory of your package and run <code>composer require "fudyartanto/c5orm"</code></p>
             <p>You directory structure should looks like below.</p>
-            <div class="code-window">
-              <div class="code-preview">
-                <div class="file-tree">
+            <div class="file-tree">
+              <ul>
+                <li class="is-folder open">your_package <i>root of package directory</i>
                   <ul>
-                    <li class="is-folder open">your_package <i>root of package directory</i>
+                    <li class="is-folder open">vendor <i>composer vendor directory</i>
                       <ul>
-                        <li class="is-folder open">vendor <i>composer vendor directory</i>
+                        <li class="is-folder open">fudyartanto
                           <ul>
-                            <li class="is-folder open">fudyartanto
-                              <ul>
-                                <li class="is-folder">c5orm <i>c5orm directory</i></li>
-                              </ul>
-                            </li>
+                            <li class="is-folder">c5orm <i>c5orm directory</i></li>
                           </ul>
                         </li>
-                        <li class="is-file">autoload.php <i>include this file to load all class in composer vendor</i></li>
                       </ul>
                     </li>
+                    <li class="is-file">autoload.php <i>include this file to load all class in composer vendor</i></li>
                   </ul>
-                </div>
-              </div>
+                </li>
+              </ul>
             </div>
+            <p>
+              Then you need include composer autoload file to load C5orm class. In your controller.php add this code below.
+            </p>
+<pre class="line-numbers"><code class="language-php">
+require __DIR__ .  DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+</code></pre>
           </section>
 
           <section>
+            <h2 id="basic-usage">Basic Usage</h2>
+            <h4 id="defining-model">Defining Model</h4>
+<pre class="line-numbers"><code class="language-php">
+use Fudyartanto\C5orm\Model;
 
+class Plane extends Model
+{
+    /**
+&nbsp;* The table associated with the model.
+&nbsp;*
+&nbsp;* @var string
+&nbsp;*/
+    protected static $table = '';
+}
+</code></pre>
+            <h4 id="crud">Create, Read, Update and Delete Data (CRUD)</h4>
+<pre class="line-numbers"><code class="language-php">
+// Create data
+$plane = new Plane();
+$plane->name = 'Sukhoi';
+$plane->length = 21;
+$plane->height = 6;
+$plane->range = 3000;
 
+if ($plane->save()) {
+  // Success create data
+} else {
+  // Failed create data
+}
+
+// Read data by its primary key
+$plane = Plane::find(1);
+if ($plane) {
+  echo $plane->name;
+}
+
+// Update data
+$plane->name = 'New Sukhoi';
+if ($plane->save()) {
+  // Success update data
+} else {
+  // Failed update data
+}
+
+// Delete data
+if ($plane->delete()) {
+  // Success delete data
+} else {
+  // Failed delete data
+}
+</code></pre>
           </section>
-
-
         </article>
         <!-- END Main content -->
       </div>
