@@ -1,7 +1,7 @@
 Concrete5 ORM
 =========================
 
-C5orm is an object-relational mapping (ORM) for concrete5 cms. C5orm is inspired by eloquent, so most of c5orm syntaq is pretty similar with eloquent syntaq.
+C5orm is an object-relational mapping (ORM) for concrete5 cms. C5orm is inspired by eloquent, so most of c5orm syntax is pretty similar with eloquent syntax.
 
 ## Usage Instructions
 > `composer require "fudyartanto/c5orm"`
