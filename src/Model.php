@@ -81,7 +81,9 @@ class Model
                 }
                 $q .= implode(", ", $sets) . " WHERE `{$primary}` = ?";
                 $values[] = $primaryValue;
-                return self::db()->Execute($q, $values);
+                if (self::db()->Execute($q, $values)) {
+                    return $this;
+                }
             } else {
                 $q = "INSERT INTO " . self::getTableName() . " SET ";
                 $sets = [];
@@ -90,7 +92,10 @@ class Model
                     $values[] = $value;
                 }
                 $q .= implode(", ", $sets);
-                return self::db()->Execute($q, $values);
+                if (self::db()->Execute($q, $values)) {
+                    $this->{$primary} = self::db()->Insert_ID();
+                    return $this;
+                }
             }
         }
     }
@@ -171,5 +176,18 @@ class Model
             $this->{$col} = $value;
         }
         return $this->save();
+    }
+
+    /**
+     * Get table column names
+     *
+     * @return array
+     */
+    public static function getColumnListing()
+    {
+        $columns = self::db()->GetAll("SHOW COLUMNS FROM " . self::getTableName());
+        return $columns ? array_map(function($column) {
+            return $column['Field'];
+        }, $columns) : [];
     }
 }
