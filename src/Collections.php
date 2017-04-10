@@ -36,4 +36,14 @@ class Collections
             return (array) $v;
         }, $this->data) : [];
     }
+
+    /**
+     * Get data
+     *
+     * @return array
+     */
+    public function data()
+    {
+        return $this->data;
+    }
 }

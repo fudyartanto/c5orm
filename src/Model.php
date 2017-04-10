@@ -100,6 +100,11 @@ class Model
         }
     }
 
+    public function getBuilder()
+    {
+        return new Builder(self::getTableName(), get_called_class());
+    }
+
     /**
      * Add query condition
      *
@@ -110,7 +115,7 @@ class Model
      */
     public static function where($column, $operator, $value)
     {
-        return (new Builder(self::getTableName()))->where($column, $operator, $value);
+        return self::getBuilder()->where($column, $operator, $value);
     }
 
     /**
@@ -189,5 +194,31 @@ class Model
         return $columns ? array_map(function($column) {
             return $column['Field'];
         }, $columns) : [];
+    }
+
+    /**
+     * Define has many relationships
+     *
+     * @param string $className
+     * @param string $foreignkey
+     * @param string $localKey
+     * @return object Collections
+     */
+    public function hasMany($className, $foreignkey, $localKey)
+    {
+        return call_user_func_array([$className, "where"], [$foreignkey, "=", $this->$localKey])->get()->data();
+    }
+
+    /**
+     * Define has one relationships
+     *
+     * @param string $className
+     * @param string $foreignkey
+     * @param string $localKey
+     * @return object
+     */
+    public function hasOne($className, $foreignkey, $localKey)
+    {
+        return call_user_func_array([$className, "where"], [$foreignkey, "=", $this->$localKey])->first();
     }
 }

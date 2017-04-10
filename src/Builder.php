@@ -20,6 +20,13 @@ class Builder
     protected $table;
 
     /**
+     * Model class name
+     *
+     * @var object
+     */
+    protected $modelClass;
+
+    /**
      * Select columns
      *
      * @var array
@@ -53,9 +60,10 @@ class Builder
      *
      * @param string $table
      */
-    public function __construct($table)
+    public function __construct($table, $modelClass)
     {
         $this->table = $table;
+        $this->modelClass = $modelClass;
     }
 
     /**
@@ -102,8 +110,7 @@ class Builder
      */
     public function count()
     {
-        $q = "SELECT count(*) FROM (" . $this->getRawQuery() . ") AS `tb`";
-        return self::db()->GetOne($q, $this->values);
+        return self::db()->GetOne("SELECT count(*) FROM (" . $this->getRawQuery() . ") AS `tb`", $this->values);
     }
 
     /**
@@ -113,14 +120,34 @@ class Builder
      */
     public function first()
     {
-        $result = self::db()->GetRow($this->getRawQuery(), $this->values);
-        $backtrace = debug_backtrace();
-        if ($result && ($class = $backtrace[1]['class'])) {
-            $model = new $class;
+        if ($result = self::db()->GetRow($this->getRawQuery(), $this->values)) {
+            $model = new $this->modelClass;
             foreach ($result as $key => $val) {
                 $model->{$key} = $val;
             }
             return $model;
+        }
+    }
+
+    /**
+     * Get data
+     *
+     * @return cobject Collections
+     */
+    public function get()
+    {
+        if ($result = self::db()->GetAll($this->getRawQuery(), $this->values)) {
+            return new Collections(
+                array_map(function($v) {
+                    $modelClass = new $this->modelClass;
+                    foreach ($v as $prop => $value) {
+                        $modelClass->{$prop} = $value;
+                    }
+                    return $modelClass;
+                }, $result)
+            );
+        } else {
+            return new Collections([]);
         }
     }
 }
