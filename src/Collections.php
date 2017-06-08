@@ -8,6 +8,8 @@
 */
 namespace Fudyartanto\C5orm;
 
+defined('C5_EXECUTE') or die('Access Denied.');
+
 class Collections
 {
     /**

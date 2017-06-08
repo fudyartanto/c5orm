@@ -9,6 +9,8 @@ namespace Fudyartanto\C5orm;
 
 use Database;
 
+defined('C5_EXECUTE') or die('Access Denied.');
+
 class Builder
 {
 
