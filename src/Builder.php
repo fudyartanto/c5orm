@@ -13,6 +13,7 @@ defined('C5_EXECUTE') or die('Access Denied.');
 
 class Builder
 {
+    const WHERE_TYPE_IN = 'IN';
 
     /**
      * Table name
@@ -50,6 +51,41 @@ class Builder
     protected $values = [];
 
     /**
+     * Join
+     *
+     * @var array
+     */
+    protected $join = [];
+
+    /**
+     * Limit
+     *
+     * @var integer
+     */
+    protected $limit;
+
+    /**
+     * Offset
+     *
+     * @var integer
+     */
+    protected $offset;
+
+    /**
+     * Group By
+     *
+     * @var array
+     */
+    protected $groupBy = [];
+
+    /**
+     * Order by
+     *
+     * @var array
+     */
+    protected $orderBy = [];
+
+    /**
      * Get database
      */
     public static function db()
@@ -69,22 +105,126 @@ class Builder
     }
 
     /**
+     * Add select query
+     *
+     * @param string $column
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public function select($column)
+    {
+        $this->columns[] = $column;
+        return $this;
+    }
+
+    /**
+     * Add join query
+     *
+     * @param string $table
+     * @param string $colLeft
+     * @param string $operator
+     * @param string $colRight
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public function join($table, $colLeft, $operator, $colRight)
+    {
+        $this->join[] = [
+            'table' => $table,
+            'colLeft' => $colLeft,
+            'operator' => $operator,
+            'colRight' => $colRight
+        ];
+        return $this;
+    }
+
+    /**
      * Add query condition
      *
      * @param string $column
      * @param string $operator
      * @param string|int $value
-     * @return object Fudyartanto\C5orm\Builder
+     * @return Fudyartanto\C5orm\Builder
      */
     public function where($column, $operator, $value)
     {
         // add value to stack
         $this->values[] = $value;
+        // add where condition to stack
         $this->where[] = [
             'column' => $column,
             'operator' => $operator,
             'value' => '?'
         ];
+        return $this;
+    }
+
+    /**
+     * Add where in condition
+     *
+     * @param string $column
+     * @param array $values
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public function whereIn($column, $values) {
+        // add value to stack
+        $this->values = array_merge($this->values, $values);
+
+        $values = array_map(function($v) {
+            return '?';
+        }, $values);
+        $this->where[] = [
+            'column' => $column,
+            'value' => implode(',', $values),
+            'type' => self::WHERE_TYPE_IN
+        ];
+        return $this;
+    }
+
+    /**
+     * Add limit query
+     *
+     * @param integer $limit
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public function limit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    /**
+     * Add offset query
+     *
+     * @param integer $offset
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public function offset($offset)
+    {
+        $this->offset = $offset;
+        return $this;
+    }
+
+    /**
+     * Add group by query
+     *
+     * @param integer $column
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public function groupBy($column)
+    {
+        $this->groupBy[] = $column;
+        return $this;
+    }
+
+    /**
+     * Add order by query
+     *
+     * @param string $column
+     * @param string $direction ASC|DESC
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public function orderBy($column, $direction = 'ASC')
+    {
+        $this->orderBy[] = $column . ' ' . $direction;
         return $this;
     }
 
@@ -95,12 +235,35 @@ class Builder
      */
     public function getRawQuery()
     {
-        $q = "SELECT * FROM {$this->table}";
+        $select = $this->columns ? implode(',', $this->columns) : '*';
+        $q = "SELECT {$select} FROM {$this->table}";
+        if ($this->join) {
+            $join = array_map(function ($v) {
+                return "{$v['table']} ON ({$v['colLeft']} {$v[operator]} {$v['colRight']})";
+            }, $this->join);
+            $q .= " JOIN " . implode(" JOIN ", $join);
+        }
         if ($this->where) {
             $where = array_map(function ($v) {
-                return "`{$v['column']}` {$v['operator']} {$v['value']}";
+                if (isset($v['type']) && $v['type'] == self::WHERE_TYPE_IN) {
+                    return "{$v['column']} IN ({$v['value']})";
+                } else {
+                    return "{$v['column']} {$v['operator']} {$v['value']}";
+                }
             }, $this->where);
             $q .= " WHERE " . implode(" AND ", $where);
+        }
+        if ($this->groupBy) {
+            $q .= " GROUP BY " . implode(',', $this->groupBy);
+        }
+        if ($this->orderBy) {
+            $q .= " ORDER BY " . implode(',', $this->orderBy);
+        }
+        if ($this->limit) {
+            $q .= " LIMIT {$this->limit}" ;  
+        }
+        if ($this->offset) {
+            $q .= " OFFSET {$this->offset}" ;  
         }
         return $q;
     }
@@ -150,6 +313,24 @@ class Builder
             );
         } else {
             return new Collections([]);
+        }
+    }
+
+    /**
+     * Pluck result by column name
+     *
+     * @param string $column
+     * @return array
+     */
+    public function pluck($column)
+    {
+        if ($result = $this->get()->data()) {
+            return array_map(function($obj) use ($column) {
+                return $obj->{$column};
+            }, $result);
+            return $result;
+        } else {
+            return [];
         }
     }
 }

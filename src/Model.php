@@ -223,4 +223,41 @@ class Model
     {
         return call_user_func_array([$className, "where"], [$foreignkey, "=", $this->$localKey])->first();
     }
+
+    /**
+     * Add select query
+     *
+     * @param string $column
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public static function select($column)
+    {
+        return self::getBuilder()->select($column);
+    }
+
+    /**
+     * Add join query
+     *
+     * @param string $table
+     * @param string $colLeft
+     * @param string $operator
+     * @param string $colRight
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public static function join($table, $colLeft, $operator, $colRight)
+    {
+        return self::getBuilder()->join($table, $colLeft, $operator, $colRight);
+    }
+
+    /**
+     * Add order by query
+     *
+     * @param string $column
+     * @param string $direction ASC|DESC
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public static function orderBy($column, $direction)
+    {
+        return self::getBuilder()->orderBy($column, $direction);
+    }
 }

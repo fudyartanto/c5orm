@@ -122,10 +122,12 @@
               </ul>
             </div>
             <p>
-              Then you need include composer autoload file to load C5orm class. In your controller.php add this code below.
+              Register C5orm class to your package controller.
             </p>
 <pre class="line-numbers"><code class="language-php">
-require __DIR__ .  DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+protected $pkgAutoloaderRegistries = [
+    'vendor/fudyartanto/c5orm/src' => '\Fudyartanto\C5orm'
+];
 </code></pre>
           </section>
 
