@@ -141,7 +141,7 @@ class Model
      * @param array $attrs
      * @return object
      */
-    private static function toCalledClass($attrs)
+    public static function toCalledClass($attrs)
     {
         $className = '\\' . get_called_class();
         $class = new $className;
