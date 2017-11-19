@@ -229,6 +229,25 @@ class Builder
     }
 
     /**
+     * Get where clause
+     *
+     * @return string
+     */
+    public function getWhereClause()
+    {
+        if ($this->where) {
+            $where = array_map(function ($v) {
+                if (isset($v['type']) && $v['type'] == self::WHERE_TYPE_IN) {
+                    return "{$v['column']} IN ({$v['value']})";
+                } else {
+                    return "{$v['column']} {$v['operator']} {$v['value']}";
+                }
+            }, $this->where);
+            return " WHERE " . implode(" AND ", $where);
+        }
+    }
+
+    /**
      * Build SQL query
      *
      * @return string
@@ -243,16 +262,9 @@ class Builder
             }, $this->join);
             $q .= " JOIN " . implode(" JOIN ", $join);
         }
-        if ($this->where) {
-            $where = array_map(function ($v) {
-                if (isset($v['type']) && $v['type'] == self::WHERE_TYPE_IN) {
-                    return "{$v['column']} IN ({$v['value']})";
-                } else {
-                    return "{$v['column']} {$v['operator']} {$v['value']}";
-                }
-            }, $this->where);
-            $q .= " WHERE " . implode(" AND ", $where);
-        }
+
+        $q .= $this->getWhereClause();
+
         if ($this->groupBy) {
             $q .= " GROUP BY " . implode(',', $this->groupBy);
         }
@@ -332,5 +344,16 @@ class Builder
         } else {
             return [];
         }
+    }
+
+    /**
+     * Deleting model by query
+     *
+     * @return bool
+     */
+    public  function delete()
+    {
+        $db = Database::connection();
+        return $db->Execute("DELETE FROM {$this->table} {$this->getWhereClause()}");
     }
 }
