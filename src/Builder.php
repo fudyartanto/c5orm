@@ -354,6 +354,6 @@ class Builder
     public  function delete()
     {
         $db = Database::connection();
-        return $db->Execute("DELETE FROM {$this->table} {$this->getWhereClause()}");
+        return $db->Execute("DELETE FROM {$this->table} {$this->getWhereClause()}", $this->values);
     }
 }
