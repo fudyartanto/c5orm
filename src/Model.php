@@ -136,6 +136,17 @@ class Model
     }
 
     /**
+     * Add relation to be popuplated
+     * 
+     * @param string/array $relation
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public static function with($relation)
+    {
+        return self::getBuilder()->with($relation);
+    }
+
+    /**
      * Convert array to current called class
      *
      * @param array $attrs

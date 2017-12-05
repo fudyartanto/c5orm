@@ -86,6 +86,13 @@ class Builder
     protected $orderBy = [];
 
     /**
+     * Relations to be populated
+     *
+     * @var array
+     */
+    protected $with = [];
+
+    /**
      * Get database
      */
     public static function db()
@@ -229,6 +236,22 @@ class Builder
     }
 
     /**
+     * Add relation to be popuplated
+     * 
+     * @param string/array $relation
+     * @return Fudyartanto\C5orm\Builder
+     */
+    public function with($relation)
+    {
+        if (is_array($columns)) {
+            $this->with = array_merge($this->with, $relation);
+        } else {
+            $this->with[] = $relation;
+        }
+        return $this;
+    }
+
+    /**
      * Get where clause
      *
      * @return string
@@ -321,7 +344,8 @@ class Builder
                         $modelClass->{$prop} = $value;
                     }
                     return $modelClass;
-                }, $result)
+                }, $result),
+                $this->with
             );
         } else {
             return new Collections([]);
