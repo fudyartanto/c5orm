@@ -53,6 +53,7 @@ class Collections
                     }
                 }
             }
+            return $return;
         }, $this->data) : [];
     }
 
